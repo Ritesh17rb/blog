@@ -8,7 +8,9 @@ import {
   getRelatedPosts,
 } from "@/lib/posts";
 import { extractToc } from "@/lib/toc";
+import { getPostSummary } from "@/lib/summary";
 import { MDXContent } from "@/lib/mdx";
+import { Sparkles } from "lucide-react";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { TableOfContents } from "@/components/TableOfContents";
 import { LikeButton } from "@/components/LikeButton";
@@ -64,6 +66,13 @@ export default async function PostPage({
   const related = getRelatedPosts(slug, data.tags ?? []);
   const time = readingTime(content).text;
 
+  let summary: string | null = null;
+  try {
+    summary = await getPostSummary(slug, content);
+  } catch (error) {
+    console.error(`Failed to generate summary for "${slug}"`, error);
+  }
+
   return (
     <>
       <ReadingProgress />
@@ -104,6 +113,18 @@ export default async function PostPage({
               priority
               className="object-cover"
             />
+          </div>
+        )}
+
+        {summary && (
+          <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-accent/20 bg-accent/5 p-5">
+            <div className="flex items-center gap-2 text-sm font-semibold text-accent">
+              <Sparkles size={16} />
+              TL;DR
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+              {summary}
+            </p>
           </div>
         )}
 

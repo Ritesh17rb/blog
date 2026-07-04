@@ -8,7 +8,7 @@ export function Footer() {
         <p>© {new Date().getFullYear()} Ritesh. Built with Next.js.</p>
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com"
+            href="https://github.com/Ritesh17rb/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
@@ -17,7 +17,7 @@ export function Footer() {
             <GithubIcon className="h-[18px] w-[18px]" />
           </a>
           <a
-            href="https://twitter.com"
+            href="https://x.com/RiteshKuma70284"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Twitter"
@@ -26,7 +26,7 @@ export function Footer() {
             <XIcon className="h-[18px] w-[18px]" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/ritesh17rb/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
