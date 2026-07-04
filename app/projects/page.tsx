@@ -2,38 +2,12 @@ import type { Metadata } from "next";
 import { ExternalLink } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { GithubIcon } from "@/components/icons/SocialIcons";
+import { projects } from "@/lib/profile";
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Things I've built.",
 };
-
-const projects = [
-  {
-    title: "This blog",
-    description:
-      "A fast, animated blog built with Next.js, MDX, and Prisma — the site you're on right now.",
-    tags: ["Next.js", "TypeScript", "Prisma"],
-    href: "#",
-    github: "#",
-  },
-  {
-    title: "Task Flow",
-    description:
-      "A minimal task manager with keyboard-first navigation and realtime sync.",
-    tags: ["React", "WebSockets", "PostgreSQL"],
-    href: "#",
-    github: "#",
-  },
-  {
-    title: "Palette",
-    description:
-      "A tool for generating accessible color systems from a single brand color.",
-    tags: ["Rust", "WASM", "Color Science"],
-    href: "#",
-    github: "#",
-  },
-];
 
 export default function ProjectsPage() {
   return (

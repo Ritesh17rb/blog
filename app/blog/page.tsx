@@ -5,8 +5,7 @@ import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description:
-    "All posts on software engineering, design systems, and building things.",
+  description: "All posts — on code, life, and everything in between.",
 };
 
 export default function BlogPage() {
@@ -20,8 +19,8 @@ export default function BlogPage() {
           Blog
         </h1>
         <p className="mt-3 max-w-xl text-zinc-600 dark:text-zinc-400">
-          {posts.length} posts on backend engineering, frontend craft, and
-          design systems.
+          {posts.length} posts on code, life, and whatever else I&apos;ve
+          been thinking about.
         </p>
       </Reveal>
       <div className="mt-10">

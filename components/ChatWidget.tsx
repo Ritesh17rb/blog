@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-type Source = { slug: string; title: string };
+type Source = { url: string; title: string };
 type ChatMessage = { role: "user" | "assistant"; content: string; sources?: Source[] };
 
 const SUGGESTIONS = [
   "What have you written about Rust?",
-  "Explain React Server Components",
-  "How do you think about color systems?",
+  "Tell me about Ritesh",
+  "What projects has Ritesh built?",
 ];
 
 export function ChatWidget() {
@@ -128,7 +128,7 @@ export function ChatWidget() {
               {messages.length === 0 && (
                 <div>
                   <p className="text-sm text-zinc-500">
-                    Ask me anything about the posts on this blog.
+                    Ask me anything about this blog, or about Ritesh himself.
                   </p>
                   <div className="mt-3 flex flex-col gap-2">
                     {SUGGESTIONS.map((suggestion) => (
@@ -166,8 +166,8 @@ export function ChatWidget() {
                       <div className="mt-2 flex flex-wrap gap-1.5 border-t border-black/10 pt-2 dark:border-white/10">
                         {message.sources.map((source) => (
                           <Link
-                            key={source.slug}
-                            href={`/blog/${source.slug}`}
+                            key={source.url}
+                            href={source.url}
                             className="rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent"
                           >
                             {source.title}

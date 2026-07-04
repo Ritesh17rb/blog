@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="border-t border-black/5 py-10 dark:border-white/10">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 px-6 text-sm text-zinc-500 sm:flex-row sm:justify-between">
-        <p>© {new Date().getFullYear()} Ritesh. Built with Next.js.</p>
+        <p>© {new Date().getFullYear()} Ritesh.</p>
         <div className="flex items-center gap-4">
           <a
             href="https://github.com/Ritesh17rb/"

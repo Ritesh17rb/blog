@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { createEmbedding } from "@/lib/openai";
 import { hashContent } from "@/lib/hash";
-import { getAllPosts, getPostSource, type PostMeta } from "@/lib/posts";
+import { getKnowledgeDocs, type KnowledgeDoc } from "@/lib/knowledge";
 
 function cosineSimilarity(a: number[], b: number[]): number {
   let dot = 0;
@@ -15,10 +15,11 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-async function ensurePostEmbedding(slug: string, content: string): Promise<number[]> {
+// `postSlug` doubles as a generic knowledge-doc id here (post slugs, or "about" / "projects").
+async function ensureDocEmbedding(docId: string, content: string): Promise<number[]> {
   const contentHash = hashContent(content);
 
-  const cached = await prisma.postEmbedding.findUnique({ where: { postSlug: slug } });
+  const cached = await prisma.postEmbedding.findUnique({ where: { postSlug: docId } });
   if (cached && cached.contentHash === contentHash) {
     return cached.embedding as number[];
   }
@@ -26,34 +27,28 @@ async function ensurePostEmbedding(slug: string, content: string): Promise<numbe
   const embedding = await createEmbedding(content.slice(0, 8000));
 
   await prisma.postEmbedding.upsert({
-    where: { postSlug: slug },
+    where: { postSlug: docId },
     update: { embedding, contentHash },
-    create: { postSlug: slug, embedding, contentHash },
+    create: { postSlug: docId, embedding, contentHash },
   });
 
   return embedding;
 }
 
-export type RelevantPost = PostMeta & { content: string; score: number };
+export type RelevantDoc = KnowledgeDoc & { score: number };
 
-export async function getRelevantPosts(question: string, k = 3): Promise<RelevantPost[]> {
-  const posts = getAllPosts();
+export async function getRelevantDocs(question: string, k = 3): Promise<RelevantDoc[]> {
+  const docs = getKnowledgeDocs();
 
-  const withContent = posts.map((post) => ({
-    post,
-    content: getPostSource(post.slug).content,
-  }));
-
-  const [questionEmbedding, postEmbeddings] = await Promise.all([
+  const [questionEmbedding, docEmbeddings] = await Promise.all([
     createEmbedding(question),
-    Promise.all(withContent.map(({ post, content }) => ensurePostEmbedding(post.slug, content))),
+    Promise.all(docs.map((doc) => ensureDocEmbedding(doc.id, doc.content))),
   ]);
 
-  return withContent
-    .map(({ post, content }, i) => ({
-      ...post,
-      content,
-      score: cosineSimilarity(questionEmbedding, postEmbeddings[i]),
+  return docs
+    .map((doc, i) => ({
+      ...doc,
+      score: cosineSimilarity(questionEmbedding, docEmbeddings[i]),
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, k);

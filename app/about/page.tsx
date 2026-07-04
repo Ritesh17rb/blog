@@ -1,42 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
+import { bio, skills, timeline } from "@/lib/profile";
 
 export const metadata: Metadata = {
   title: "About",
   description: "A little about who I am and what I work on.",
 };
-
-const skills = [
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Rust",
-  "PostgreSQL",
-  "Prisma",
-  "Tailwind CSS",
-];
-
-const timeline = [
-  {
-    year: "2026",
-    title: "Writing about backend + frontend craft",
-    description:
-      "Sharing what I learn building products, one post at a time.",
-  },
-  {
-    year: "2024",
-    title: "Went deep on systems programming",
-    description:
-      "Picked up Rust and started caring a lot more about performance.",
-  },
-  {
-    year: "2021",
-    title: "Started building for the web",
-    description: "First lines of JavaScript, and I haven't stopped since.",
-  },
-];
 
 export default function AboutPage() {
   return (
@@ -52,10 +22,7 @@ export default function AboutPage() {
           />
           <div>
             <h1 className="text-3xl font-bold tracking-tight">About me</h1>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-              Software engineer. I build things, break things, and write
-              about both.
-            </p>
+            <p className="mt-2 text-zinc-600 dark:text-zinc-400">{bio.tagline}</p>
           </div>
         </div>
       </Reveal>
@@ -64,19 +31,9 @@ export default function AboutPage() {
         delay={0.1}
         className="prose prose-zinc mt-10 max-w-none dark:prose-invert"
       >
-        <p>
-          I&apos;m Ritesh — I write code for a living and, increasingly, for
-          fun. This site is where I put the notes I&apos;d otherwise lose:
-          things I learn while building backend services, debugging a gnarly
-          React re-render, or just obsessing over a color palette for too
-          long.
-        </p>
-        <p>
-          I care about software that feels fast and looks intentional — the
-          kind of craft that&apos;s hard to point at but easy to feel. Most
-          of what I write about lives at the intersection of performance,
-          design, and developer experience.
-        </p>
+        {bio.paragraphs.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
       </Reveal>
 
       <Reveal delay={0.2}>

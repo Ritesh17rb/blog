@@ -21,9 +21,9 @@ export function Hero() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="mt-4 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl"
       >
-        I write code, and{" "}
+        I write code, live life, and{" "}
         <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          write about it
+          write about both
         </span>
         .
       </motion.h1>
@@ -33,8 +33,8 @@ export function Hero() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="mt-6 max-w-xl text-lg text-zinc-600 dark:text-zinc-400"
       >
-        Notes on backend engineering, frontend craft, and the small design
-        decisions that make software feel good to use.
+        Notes on software, life, and whatever else I&apos;m currently
+        thinking about — not just tech.
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 16 }}

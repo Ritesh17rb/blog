@@ -23,7 +23,7 @@ export function Pre({ children, ...props }: ComponentProps<"pre">) {
         type="button"
         onClick={handleCopy}
         aria-label="Copy code to clipboard"
-        className="absolute right-3 top-3 rounded-md border border-white/10 bg-white/5 p-1.5 text-zinc-300 opacity-0 backdrop-blur transition-opacity duration-150 hover:bg-white/10 group-hover:opacity-100"
+        className="absolute right-3 top-3 rounded-md border border-white/10 bg-white/10 p-1.5 text-zinc-300 opacity-70 backdrop-blur transition-opacity duration-150 hover:bg-white/20 hover:opacity-100 focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
       >
         {copied ? <Check size={14} /> : <Copy size={14} />}
       </button>

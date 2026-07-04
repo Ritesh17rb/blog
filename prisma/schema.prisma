@@ -49,6 +49,8 @@ model PostSummary {
   updatedAt   DateTime @updatedAt
 }
 
+// postSlug also doubles as a generic knowledge-doc id (e.g. "about", "projects")
+// for the chatbot's retrieval index, not just blog post slugs.
 model PostEmbedding {
   postSlug    String   @id
   contentHash String

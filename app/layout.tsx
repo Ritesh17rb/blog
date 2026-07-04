@@ -22,11 +22,11 @@ const siteUrl = "https://ritesh.dev";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "ritesh.dev — Notes on code, design, and building things",
+    default: "ritesh.dev — Notes on code, life, and everything in between",
     template: "%s — ritesh.dev",
   },
   description:
-    "A blog about software engineering, design systems, and building fast, well-crafted products.",
+    "A personal blog about software, life, and whatever's currently on my mind.",
   openGraph: {
     type: "website",
     siteName: "ritesh.dev",
