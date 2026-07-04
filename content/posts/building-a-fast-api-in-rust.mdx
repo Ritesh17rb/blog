@@ -1,0 +1,93 @@
+---
+title: "Building a Fast API in Rust with Axum"
+excerpt: "A practical walkthrough of standing up a production-ready REST API in Rust using Axum, Tokio, and SQLx."
+date: "2026-06-18"
+tags: ["Rust", "Backend", "Performance"]
+cover: "/images/rust-api.svg"
+---
+
+Rust has quietly become one of the best choices for building APIs that need to be
+both fast and reliable. In this post I'll walk through setting up a small service
+with [Axum](https://github.com/tokio-rs/axum), Tokio, and SQLx.
+
+## Why Axum
+
+Axum is built on top of `tower`, which means you get middleware, timeouts, and
+request tracing almost for free. It also has first-class support for extractors,
+so handlers stay declarative.
+
+```rust
+use axum::{routing::get, Router, Json};
+use serde::Serialize;
+
+#[derive(Serialize)]
+struct Health {
+    status: &'static str,
+}
+
+async fn health() -> Json<Health> {
+    Json(Health { status: "ok" })
+}
+
+#[tokio::main]
+async fn main() {
+    let app = Router::new().route("/health", get(health));
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+        .await
+        .unwrap();
+
+    axum::serve(listener, app).await.unwrap();
+}
+```
+
+That's a full, working HTTP server in under twenty lines.
+
+## Adding a database layer
+
+For persistence I reach for `sqlx` because it checks your SQL queries against the
+real schema at compile time.
+
+```rust
+use sqlx::{FromRow, PgPool};
+
+#[derive(FromRow, serde::Serialize)]
+struct Post {
+    id: i64,
+    title: String,
+}
+
+async fn list_posts(pool: &PgPool) -> Result<Vec<Post>, sqlx::Error> {
+    sqlx::query_as::<_, Post>("SELECT id, title FROM posts ORDER BY id DESC")
+        .fetch_all(pool)
+        .await
+}
+```
+
+## Error handling
+
+Instead of `unwrap()`-ing everywhere, define a single app-wide error type that
+implements `IntoResponse`:
+
+```rust
+enum AppError {
+    NotFound,
+    Internal(anyhow::Error),
+}
+
+impl axum::response::IntoResponse for AppError {
+    fn into_response(self) -> axum::response::Response {
+        let status = match self {
+            AppError::NotFound => axum::http::StatusCode::NOT_FOUND,
+            AppError::Internal(_) => axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+        };
+        status.into_response()
+    }
+}
+```
+
+## Wrapping up
+
+Axum's combination of ergonomics and raw throughput makes it a great default for
+new backend services. The full example (with tracing, CORS, and graceful
+shutdown) is worth exploring once this base is in place.

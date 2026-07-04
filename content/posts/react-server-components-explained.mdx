@@ -1,0 +1,81 @@
+---
+title: "React Server Components, Explained Without the Hype"
+excerpt: "What actually changes when a component runs on the server, and when you still reach for use client."
+date: "2026-05-02"
+tags: ["React", "Next.js", "Frontend"]
+cover: "/images/rsc.svg"
+---
+
+Server Components are one of those ideas that sound bigger than they are once
+you see them in practice. The core idea: some components render once, on the
+server, and ship **zero JavaScript** to the browser.
+
+## The mental model
+
+Think of your component tree as split into two halves:
+
+- **Server components** — fetch data, read files, talk to a database. No
+  `useState`, no event handlers.
+- **Client components** — anything interactive. Marked with `"use client"`.
+
+```tsx
+// app/posts/page.tsx — server component by default
+import { getAllPosts } from "@/lib/posts";
+import { LikeButton } from "@/components/LikeButton";
+
+export default function PostsPage() {
+  const posts = getAllPosts();
+
+  return (
+    <ul>
+      {posts.map((post) => (
+        <li key={post.slug}>
+          {post.title}
+          <LikeButton slug={post.slug} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+```tsx
+// components/LikeButton.tsx — client component, needs interactivity
+"use client";
+
+import { useState } from "react";
+
+export function LikeButton({ slug }: { slug: string }) {
+  const [liked, setLiked] = useState(false);
+  return (
+    <button onClick={() => setLiked((prev) => !prev)}>
+      {liked ? "♥" : "♡"}
+    </button>
+  );
+}
+```
+
+## Why it matters
+
+Every byte of JS you *don't* ship is a byte the browser doesn't have to parse,
+compile, and execute. For content-heavy pages — like a blog — most of the page
+can be a server component, with only small interactive islands (like buttons,
+forms, and comment boxes) opting into the client.
+
+## A common trap
+
+You can't import a server component *into* a client component and expect it to
+stay a server component — once you cross into `"use client"`, everything below
+that boundary in the render tree is client-rendered unless it's passed in as
+`children`.
+
+```tsx
+// This still works: Sidebar renders on the server,
+// even though ClientShell is a client component.
+<ClientShell>
+  <Sidebar />
+</ClientShell>
+```
+
+That pattern — passing server components as `children` — is the escape hatch
+worth remembering.

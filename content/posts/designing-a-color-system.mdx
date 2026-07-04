@@ -1,0 +1,56 @@
+---
+title: "Designing a Color System That Doesn't Fall Apart in Dark Mode"
+excerpt: "Notes on building a token-based color system that holds up across light, dark, and everything in between."
+date: "2026-03-21"
+tags: ["Design", "CSS", "Frontend"]
+cover: "/images/color-system.svg"
+---
+
+Most color bugs show up the moment someone toggles dark mode. The fix isn't
+more colors — it's fewer, better-named ones.
+
+## Start with roles, not hex codes
+
+Instead of naming a color `blue-500`, name it by what it *does*:
+
+```css
+:root {
+  --color-surface: #ffffff;
+  --color-surface-raised: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-muted: #475569;
+  --color-accent: #6366f1;
+}
+
+.dark {
+  --color-surface: #0a0a0a;
+  --color-surface-raised: #141414;
+  --color-text-primary: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-accent: #818cf8;
+}
+```
+
+Now components reference `--color-surface`, never a raw hex value, and the
+whole app re-themes by swapping one class on `<html>`.
+
+## Contrast is the actual constraint
+
+Pick accent colors by checking contrast ratio against both surfaces, not by
+eye. A purple that looks great on white can disappear on near-black.
+
+## Animation and color together
+
+A theme toggle feels broken if the colors snap instantly. A short
+transition on `background-color` and `color` (150–200ms) makes the switch
+read as intentional rather than jarring — which is exactly what a
+view-transition or a simple CSS `transition` property gives you for free.
+
+```css
+* {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+```
+
+Small detail, but it's the difference between a theme toggle that feels
+designed and one that feels like a bug.
